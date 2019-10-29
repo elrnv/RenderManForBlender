@@ -63,7 +63,7 @@ from .spool import spool_render
 from bpy_extras.io_utils import ExportHelper
 
 
-class Renderman_open_stats(bpy.types.Operator):
+class RENDERMAN_OT_open_stats(bpy.types.Operator):
     bl_idname = 'rman.open_stats'
     bl_label = "Open Frame Stats"
     bl_description = "Open Current Frame stats file"
@@ -78,7 +78,7 @@ class Renderman_open_stats(bpy.types.Operator):
         return {'FINISHED'}
 
 
-class Renderman_start_it(bpy.types.Operator):
+class RENDERMAN_OT_start_it(bpy.types.Operator):
     bl_idname = 'rman.start_it'
     bl_label = "Start IT"
     bl_description = "Start RenderMan's IT"
@@ -96,7 +96,7 @@ class Renderman_start_it(bpy.types.Operator):
         return {'FINISHED'}
 
 
-class Renderman_open_last_RIB(bpy.types.Operator):
+class RENDERMAN_OT_open_last_RIB(bpy.types.Operator):
     bl_idname = 'rman.open_rib'
     bl_label = "Open Last RIB Scene file."
     bl_description = "Opens the last generated Scene.rib file in the system default text editor"
@@ -123,7 +123,7 @@ class Renderman_open_last_RIB(bpy.types.Operator):
 class RENDERMAN_OT_add_remove_output(bpy.types.Operator):
     bl_idname = "renderman.add_remove_output"
     bl_label = "Add or remove channel from output"
-    info_string = StringProperty()
+    info_string: StringProperty()
 
     def execute(self, context):
         self.report({'INFO'}, self.info_string)
@@ -197,8 +197,8 @@ class SHADING_OT_add_renderman_nodetree(bpy.types.Operator):
     bl_label = "Add RenderMan Nodetree"
     bl_description = "Add a RenderMan shader node tree linked to this material"
 
-    idtype = StringProperty(name="ID Type", default="material")
-    bxdf_name = StringProperty(name="Bxdf Name", default="PxrSurface")
+    idtype:  StringProperty(name="ID Type", default="material")
+    bxdf_name:  StringProperty(name="Bxdf Name", default="PxrSurface")
 
     def execute(self, context):
         idtype = self.properties.idtype
@@ -280,20 +280,20 @@ class refresh_osl_shader(bpy.types.Operator):
     def invoke(self, context, event):
         context.node.RefreshNodes(context)
         return {'FINISHED'}
-        
-class RendermanBake(bpy.types.Operator):
+
+class RENDERMAN_OT_bake(bpy.types.Operator):
     bl_idname = "renderman.bake"
     bl_label = "Baking"
     bl_description = "Bake pattern nodes to texture"
     rpass = None
     is_running = False
-    
+
     def gen_rib_frame(self, rpass):
         try:
             rpass.gen_rib(convert_textures=False)
         except Exception as err:
             self.report({'ERROR'}, 'Rib gen error: ' + traceback.format_exc())
-            
+
     def execute(self, context):
         if engine.ipr:
             self.report(
@@ -328,7 +328,7 @@ class RendermanBake(bpy.types.Operator):
         rpass = None
         return {'FINISHED'}
 
-class ExternalRender(bpy.types.Operator):
+class RENDERMAN_OT_ExternalRender(bpy.types.Operator):
 
     ''''''
     bl_idname = "renderman.external_render"
@@ -461,7 +461,7 @@ class ExternalRender(bpy.types.Operator):
         return {'FINISHED'}
 
 
-class StartInteractive(bpy.types.Operator):
+class RENDERMAN_OT_StartInteractive(bpy.types.Operator):
 
     ''''''
     bl_idname = "lighting.start_interactive"
@@ -494,12 +494,14 @@ class StartInteractive(bpy.types.Operator):
             if addon_prefs.draw_ipr_text:
                 engine.ipr_handle = bpy.types.SpaceView3D.draw_handler_add(
                     self.draw, (context,), 'WINDOW', 'POST_PIXEL')
-            bpy.app.handlers.scene_update_post.append(
-                engine.ipr.issue_transform_edits)
+            # bpy.app.handlers.scene_update_post.append(
+            #     engine.ipr.issue_transform_edits)
+            print("2.8 Removed scene_update_post")
             bpy.app.handlers.load_pre.append(self.invoke)
         else:
-            bpy.app.handlers.scene_update_post.remove(
-                engine.ipr.issue_transform_edits)
+            # bpy.app.handlers.scene_update_post.remove(
+            #     engine.ipr.issue_transform_edits)
+            print("2.8 Removed scene_update_post")
             # The user should not turn this on and off during IPR rendering.
             if addon_prefs.draw_ipr_text:
                 bpy.types.SpaceView3D.draw_handler_remove(
@@ -523,20 +525,20 @@ class ExportRIBObject(bpy.types.Operator):
     bl_label = "Export Object as RIB Archive."
     bl_description = "Export single object as a RIB archive for use in other blend files or for other uses"
 
-    export_mat = BoolProperty(
+    export_mat:  BoolProperty(
         name="Export Material",
         description="Do you want to export the material?",
         default=True)
 
-    export_all_frames = BoolProperty(
+    export_all_frames:  BoolProperty(
         name="Export All Frames",
         description="Export entire animation time frame",
         default=False)
 
-    filepath = bpy.props.StringProperty(
+    filepath:  bpy.props.StringProperty(
         subtype="FILE_PATH")
 
-    filename = bpy.props.StringProperty(
+    filename:  bpy.props.StringProperty(
         subtype="FILE_NAME",
         default="")
 
@@ -780,31 +782,31 @@ class COLLECTION_OT_add_remove(bpy.types.Operator):
     bl_label = "Add or Remove Paths"
     bl_idname = "collection.add_remove"
 
-    action = EnumProperty(
+    action:  EnumProperty(
         name="Action",
         description="Either add or remove properties",
         items=[('ADD', 'Add', ''),
                ('REMOVE', 'Remove', '')],
         default='ADD')
-    context = StringProperty(
+    context:  StringProperty(
         name="Context",
         description="Name of context member to find renderman pointer in",
         default="")
-    collection = StringProperty(
+    collection:  StringProperty(
         name="Collection",
         description="The collection to manipulate",
         default="")
-    collection_index = StringProperty(
+    collection_index:  StringProperty(
         name="Index Property",
         description="The property used as a collection index",
         default="")
-    defaultname = StringProperty(
+    defaultname:  StringProperty(
         name="Default Name",
         description="Default name to give this collection item",
         default="")
     # BBM addition begin
-    is_shader_param = BoolProperty(name='Is shader parameter', default=False)
-    shader_type = StringProperty(
+    is_shader_param:  BoolProperty(name='Is shader parameter', default=False)
+    shader_type:  StringProperty(
         name="shader type",
         default='surface')
     # BBM addition end
@@ -931,8 +933,8 @@ class OT_add_to_group(bpy.types.Operator):
     bl_idname = 'renderman.add_to_group'
     bl_label = 'Add Selected to Object Group'
 
-    group_index = IntProperty(default=0)
-    item_type = StringProperty(default='object')
+    group_index:  IntProperty(default=0)
+    item_type: StringProperty(default='object')
 
     def execute(self, context):
         scene = context.scene
@@ -970,8 +972,8 @@ class OT_remove_from_group(bpy.types.Operator):
     bl_idname = 'renderman.remove_from_group'
     bl_label = 'Remove Selected from Object Group'
 
-    group_index = IntProperty(default=0)
-    item_type = StringProperty(default='object')
+    group_index:  IntProperty(default=0)
+    item_type:  StringProperty(default='object')
 
     def execute(self, context):
         scene = context.scene
@@ -994,8 +996,8 @@ class OT_remove_add_rem_light_link(bpy.types.Operator):
     bl_idname = 'renderman.add_rem_light_link'
     bl_label = 'Add/Remove Selected from Object Group'
 
-    add_remove = StringProperty(default='add')
-    ll_name = StringProperty(default='')
+    add_remove: StringProperty(default='add')
+    ll_name: StringProperty(default='')
 
     def execute(self, context):
         scene = context.scene
@@ -1419,7 +1421,7 @@ compile_shader_menu_func = (lambda self, context: self.layout.operator(
 def register():
     bpy.types.TEXT_MT_text.append(compile_shader_menu_func)
     bpy.types.TEXT_MT_toolbox.append(compile_shader_menu_func)
-    bpy.types.INFO_MT_help.append(menu_draw)
+    bpy.types.TOPBAR_MT_help.append(menu_draw)
 
     # Register any default presets here. This includes render based and
     # Material based
@@ -1440,6 +1442,6 @@ def register():
 def unregister():
     bpy.types.TEXT_MT_text.remove(compile_shader_menu_func)
     bpy.types.TEXT_MT_toolbox.remove(compile_shader_menu_func)
-    bpy.types.INFO_MT_help.remove(menu_draw)
+    bpy.types.TOPBAR_MT_help.remove(menu_draw)
 
     # It should be fine to leave presets registered as they are not in memory.

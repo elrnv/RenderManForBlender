@@ -39,7 +39,7 @@ from bpy.props import StringProperty
 
 # panel for the toolbar of node editor
 class Renderman_Presets_UI_Panel(bpy.types.Panel):
-    bl_idname = "renderman_presets_ui_panel"
+    bl_idname = "RENDERMAN_PT_renderman_presets_ui_panel"
     bl_label = "RenderMan Presets"
     bl_space_type = "VIEW_3D"
     bl_region_type = "TOOLS"
@@ -76,7 +76,7 @@ class Renderman_Presets_UI_Panel(bpy.types.Panel):
 
             row = layout.row(align=True)
             row.context_pointer_set('renderman_preset', util.get_addon_prefs().presets_library)
-            row.menu('renderman_presets_menu', text="Select Library")
+            row.menu('RENDERMAN_MT_renderman_presets_menu', text="Select Library")
             row.operator("renderman.init_preset_library", text="", icon="FILE_REFRESH")
             active = RendermanPresetGroup.get_active_library()
 
@@ -111,7 +111,7 @@ class Renderman_Presets_UI_Panel(bpy.types.Panel):
                 layout.operator("renderman.save_asset_to_library", text="Save Material to Library").lib_path = active.path
 
 class Renderman_Presets_Menu(bpy.types.Menu):
-    bl_idname = "renderman_presets_menu"
+    bl_idname = "RENDERMAN_MT_renderman_presets_menu"
     bl_label = "RenderMan Presets Menu"
 
     path = StringProperty(default="")
@@ -126,7 +126,7 @@ class Renderman_Presets_Menu(bpy.types.Menu):
                 self.layout.context_pointer_set('renderman_preset', sub)
                 prefix = "* " if sub.is_active() else ''
                 if len(sub.sub_groups):
-                    self.layout.menu('renderman_presets_menu', text=prefix + sub.name)
+                    self.layout.menu('RENDERMAN_MT_renderman_presets_menu', text=prefix + sub.name)
                 else:
                     prefix = "* " if sub.is_active() else ''
                     self.layout.operator('renderman.set_active_preset_library',text=prefix + sub.name).lib_path = sub.path

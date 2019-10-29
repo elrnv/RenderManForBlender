@@ -75,7 +75,7 @@ def update_func(self, context):
 
 
 class RendermanSocket:
-    ui_open = BoolProperty(name='UI Open', default=True)
+    ui_open: BoolProperty(name='UI Open', default=True)
 
     def get_pretty_name(self, node):
         if node.bl_idname in group_nodes:
@@ -132,8 +132,8 @@ class RendermanNodeSocketFloat(bpy.types.NodeSocketFloat, RendermanSocket):
     bl_idname = 'RendermanNodeSocketFloat'
     bl_label = 'RenderMan Float Socket'
 
-    default_value = FloatProperty(update=update_func)
-    renderman_type = StringProperty(default='float')
+    default_value: FloatProperty(update=update_func)
+    renderman_type: StringProperty(default='float')
 
     def draw_color(self, context, node):
         return (0.5, 0.5, 0.5, 1.0)
@@ -145,7 +145,7 @@ class RendermanNodeSocketInterfaceFloat(bpy.types.NodeSocketInterfaceFloat, Rend
     bl_label = 'RenderMan Float Socket'
     bl_socket_idname = 'RendermanNodeSocketFloat'
 
-    default_value = FloatProperty()
+    default_value: FloatProperty()
 
     def draw_color(self, context):
         return (0.5, 0.5, 0.5, 1.0)
@@ -156,8 +156,8 @@ class RendermanNodeSocketInt(bpy.types.NodeSocketInt, RendermanSocket):
     bl_idname = 'RendermanNodeSocketInt'
     bl_label = 'RenderMan Int Socket'
 
-    default_value = IntProperty(update=update_func)
-    renderman_type = StringProperty(default='int')
+    default_value: IntProperty(update=update_func)
+    renderman_type: StringProperty(default='int')
 
     def draw_color(self, context, node):
         return (1.0, 1.0, 1.0, 1.0)
@@ -169,7 +169,7 @@ class RendermanNodeSocketInterfaceInt(bpy.types.NodeSocketInterfaceInt, Renderma
     bl_label = 'RenderMan Int Socket'
     bl_socket_idname = 'RendermanNodeSocketInt'
 
-    default_value = IntProperty()
+    default_value: IntProperty()
 
     def draw_color(self, context):
         return (1.0, 1.0, 1.0, 1.0)
@@ -179,9 +179,9 @@ class RendermanNodeSocketString(bpy.types.NodeSocketString, RendermanSocket):
     '''RenderMan string input/output'''
     bl_idname = 'RendermanNodeSocketString'
     bl_label = 'RenderMan String Socket'
-    default_value = StringProperty(update=update_func)
-    is_texture = BoolProperty(default=False)
-    renderman_type = StringProperty(default='string')
+    default_value: StringProperty(update=update_func)
+    is_texture: BoolProperty(default=False)
+    renderman_type: StringProperty(default='string')
 
 
 class RendermanNodeSocketStruct(bpy.types.NodeSocketString, RendermanSocket):
@@ -206,9 +206,9 @@ class RendermanNodeSocketColor(bpy.types.NodeSocketColor, RendermanSocket):
     bl_idname = 'RendermanNodeSocketColor'
     bl_label = 'RenderMan Color Socket'
 
-    default_value = FloatVectorProperty(size=3,
+    default_value: FloatVectorProperty(size=3,
                                         subtype="COLOR", update=update_func)
-    renderman_type = StringProperty(default='color')
+    renderman_type: StringProperty(default='color')
 
     def draw_color(self, context, node):
         return (1.0, 1.0, .5, 1.0)
@@ -220,7 +220,7 @@ class RendermanNodeSocketInterfaceColor(bpy.types.NodeSocketInterfaceColor, Rend
     bl_label = 'RenderMan Color Socket'
     bl_socket_idname = 'RendermanNodeSocketColor'
 
-    default_value = FloatVectorProperty(size=3,
+    default_value: FloatVectorProperty(size=3,
                                         subtype="COLOR")
 
     def draw_color(self, context):
@@ -233,9 +233,9 @@ class RendermanNodeSocketVector(RendermanSocket, bpy.types.NodeSocketVector):
     bl_label = 'RenderMan Vector Socket'
     hide_value = True
 
-    default_value = FloatVectorProperty(size=3,
+    default_value: FloatVectorProperty(size=3,
                                         subtype="EULER", update=update_func)
-    renderman_type = StringProperty(default='vector')
+    renderman_type: StringProperty(default='vector')
 
     def draw_color(self, context, node):
         return (.25, .25, .75, 1.0)
@@ -248,7 +248,7 @@ class RendermanNodeSocketInterfaceVector(bpy.types.NodeSocketInterfaceVector, Re
     bl_socket_idname = 'RendermanNodeSocketVector'
     hide_value = True
 
-    default_value = FloatVectorProperty(size=3,
+    default_value: FloatVectorProperty(size=3,
                                         subtype="EULER")
 
     def draw_color(self, context):
@@ -363,7 +363,7 @@ class RendermanShadingNode(bpy.types.ShaderNode):
                 layout.prop(self, "expression")
         else:
             # temp until we can create ramps natively
-            if self.plugin_name == 'PxrRamp':
+            if self.__annotations__['plugin_name'] == 'PxrRamp':
                 nt = bpy.data.node_groups[self.node_group]
                 if nt:
                     layout.template_color_ramp(
@@ -410,7 +410,7 @@ class RendermanShadingNode(bpy.types.ShaderNode):
             node = context.node
         else:
             node = nodeOR
-        prefs = bpy.context.user_preferences.addons[__package__].preferences
+        prefs = bpy.context.preferences.addons[__package__].preferences
 
         out_path = user_path(prefs.env_vars.out)
         compile_path = os.path.join(user_path(prefs.env_vars.out), "shaders")
@@ -452,7 +452,7 @@ class RendermanShadingNode(bpy.types.ShaderNode):
                 FileNameNoEXT = os.path.splitext(script.name)[0]
                 FileNameOSO = FileNameNoEXT
                 FileNameOSO += ".oso"
-                node.plugin_name = FileNameNoEXT
+                node.__annotations__['plugin_name'] = FileNameNoEXT
                 ok = node.compile_osl(osl_file.name, compile_path, script.name)
                 export_path = os.path.join(
                     user_path(prefs.env_vars.out), "shaders", FileNameOSO)
@@ -461,7 +461,7 @@ class RendermanShadingNode(bpy.types.ShaderNode):
                 ok = node.compile_osl(osl_path, compile_path)
                 FileName = os.path.basename(osl_path)
                 FileNameNoEXT = os.path.splitext(FileName)[0]
-                node.plugin_name = FileNameNoEXT
+                node.__annotations__['plugin_name'] = FileNameNoEXT
                 FileNameOSO = FileNameNoEXT
                 FileNameOSO += ".oso"
                 export_path = os.path.join(
@@ -480,7 +480,7 @@ class RendermanShadingNode(bpy.types.ShaderNode):
             debug('osl', prop_names, "MetaInfo: ", shader_meta)
             # Set node name to shader name
             node.label = shader_meta["shader"]
-            node.plugin_name = shader_meta["shader"]
+            node.__annotations__['plugin_name'] = shader_meta["shader"]
             # Generate new inputs and outputs
             setattr(node, 'shader_meta', shader_meta)
             node.setOslProps(prop_names, shader_meta)
@@ -612,7 +612,7 @@ def generate_node_type(prefs, name, args):
                 'light': RendermanLightNode}
     if nodeType not in nodeDict.keys():
         return
-    ntype = type(typename, (nodeDict[nodeType],), {})
+    ntype = type(typename, (nodeDict[nodeType],), {'__annotations__': {}})
     ntype.bl_label = name
     ntype.typename = typename
 
@@ -628,7 +628,7 @@ def generate_node_type(prefs, name, args):
             node_add_outputs(self)
             # if this is PxrLayerSurface set the diffusegain to 0.  The default
             # of 1 is unintuitive
-            if self.plugin_name == 'PxrLayerSurface':
+            if self.__annotations__['plugin_name'] == 'PxrLayerSurface':
                 self.diffuseGain = 0
         elif self.renderman_node_type == 'light':
             # only make a few sockets connectable
@@ -664,8 +664,8 @@ def generate_node_type(prefs, name, args):
     if name == 'PxrRamp':
         ntype.node_group = StringProperty('color_ramp', default='')
 
-    ntype.plugin_name = StringProperty(name='Plugin Name',
-                                       default=name, options={'HIDDEN'})
+    ntype.__annotations__["plugin_name"] = StringProperty(name='Plugin Name',
+                                                          default=name, options={'HIDDEN'})
     # lights cant connect to a node tree in 20.0
     class_generate_properties(ntype, name, inputs + outputs)
     if nodeType == 'light':
@@ -902,7 +902,7 @@ def draw_node_properties_recursive(layout, context, nt, node, level=0):
                                                        text='', icon="LAYER_USED")
 
     # if this is a cycles node do something different
-    if not hasattr(node, 'plugin_name') or node.bl_idname == 'PxrOSLPatternNode':
+    if not hasattr(node, '__annotations__') or not "plugin_name" in node.__annotations__ or node.bl_idname == 'PxrOSLPatternNode':
         node.draw_buttons(context, layout)
         for input in node.inputs:
             if input.is_linked:
@@ -1026,7 +1026,7 @@ class Add_Node:
                           'Disconnect the node connected to this socket'))
         return items
 
-    node_type = EnumProperty(name="Node Type",
+    node_type: EnumProperty(name="Node Type",
                              description='Node type to add to this socket',
                              items=get_type_items)
 
@@ -1086,7 +1086,7 @@ class NODE_OT_add_bxdf(bpy.types.Operator, Add_Node):
     bl_idname = 'node.add_bxdf'
     bl_label = 'Add Bxdf Node'
     bl_description = 'Connect a Bxdf to this socket'
-    input_type = StringProperty(default='Bxdf')
+    input_type: StringProperty(default='Bxdf')
 
 
 class NODE_OT_add_displacement(bpy.types.Operator, Add_Node):
@@ -1099,7 +1099,7 @@ class NODE_OT_add_displacement(bpy.types.Operator, Add_Node):
     bl_idname = 'node.add_displacement'
     bl_label = 'Add Displacement Node'
     bl_description = 'Connect a Displacement shader to this socket'
-    input_type = StringProperty(default='Displacement')
+    input_type: StringProperty(default='Displacement')
 
 
 class NODE_OT_add_light(bpy.types.Operator, Add_Node):
@@ -1112,7 +1112,7 @@ class NODE_OT_add_light(bpy.types.Operator, Add_Node):
     bl_idname = 'node.add_light'
     bl_label = 'Add Light Node'
     bl_description = 'Connect a Light shader to this socket'
-    input_type = StringProperty(default='Light')
+    input_type: StringProperty(default='Light')
 
 
 class NODE_OT_add_pattern(bpy.types.Operator, Add_Node):
@@ -1125,7 +1125,7 @@ class NODE_OT_add_pattern(bpy.types.Operator, Add_Node):
     bl_idname = 'node.add_pattern'
     bl_label = 'Add Pattern Node'
     bl_description = 'Connect a Pattern to this socket'
-    input_type = StringProperty(default='Pattern')
+    input_type: StringProperty(default='Pattern')
 
 
 class NODE_OT_add_layer(bpy.types.Operator, Add_Node):
@@ -1137,7 +1137,7 @@ class NODE_OT_add_layer(bpy.types.Operator, Add_Node):
     bl_idname = 'node.add_layer'
     bl_label = 'Add Layer Node'
     bl_description = 'Connect a PxrLayer'
-    input_type = StringProperty(default='Layer')
+    input_type: StringProperty(default='Layer')
 
 
 class NODE_OT_add_manifold(bpy.types.Operator, Add_Node):
@@ -1149,7 +1149,7 @@ class NODE_OT_add_manifold(bpy.types.Operator, Add_Node):
     bl_idname = 'node.add_manifold'
     bl_label = 'Add Manifold Node'
     bl_description = 'Connect a Manifold'
-    input_type = StringProperty(default='Manifold')
+    input_type: StringProperty(default='Manifold')
 
 
 class NODE_OT_add_bump(bpy.types.Operator, Add_Node):
@@ -1161,7 +1161,7 @@ class NODE_OT_add_bump(bpy.types.Operator, Add_Node):
     bl_idname = 'node.add_bump'
     bl_label = 'Add Bump Node'
     bl_description = 'Connect a bump node'
-    input_type = StringProperty(default='Bump')
+    input_type: StringProperty(default='Bump')
 
 # return if this param has a vstuct connection or linked independently
 
@@ -1314,7 +1314,7 @@ def gen_params(ri, node, mat_name=None):
     if node.bl_idname == "PxrOSLPatternNode":
 
         if getattr(node, "codetypeswitch") == "EXT":
-            prefs = bpy.context.user_preferences.addons[__package__].preferences
+            prefs = bpy.context.preferences.addons[__package__].preferences
             osl_path = user_path(getattr(node, 'shadercode'))
             FileName = os.path.basename(osl_path)
             FileNameNoEXT,ext = os.path.splitext(FileName)
@@ -1377,7 +1377,7 @@ def gen_params(ri, node, mat_name=None):
         for prop_name, meta in node.prop_meta.items():
             if prop_name in txmake_options.index:
                 pass
-            elif node.plugin_name == 'PxrRamp' and prop_name in ['colors', 'positions']:
+            elif node.__annotations__["plugin_name"] == 'PxrRamp' and prop_name in ['colors', 'positions']:
                 pass
 
             elif(prop_name in ['sblur', 'tblur', 'notes']):
@@ -1477,7 +1477,7 @@ def gen_params(ri, node, mat_name=None):
                         params['%s %s' % (meta['renderman_type'],
                                           meta['renderman_name'])] = \
                             rib(prop, type_hint=meta['renderman_type'])
-    if node.plugin_name == 'PxrRamp':
+    if node.__annotations__["plugin_name"] == 'PxrRamp':
         nt = bpy.data.node_groups[node.node_group]
         if nt:
             dummy_ramp = nt.nodes['ColorRamp']
@@ -1555,7 +1555,7 @@ def convert_cycles_bsdf(nt, rman_parent, node, input_index):
 
         # this is a heterogenous mix of add
         else:
-            if rman_parent.plugin_name == 'PxrLayerMixer':
+            if rman_parent.__annotations__["plugin_name"] == 'PxrLayerMixer':
                 old_parent = rman_parent
                 rman_parent = create_rman_surface(nt, rman_parent, input_index,
                                                   'PxrLayerPatternNode')
@@ -1565,7 +1565,7 @@ def convert_cycles_bsdf(nt, rman_parent, node, input_index):
 
     # else set lobe on parent
     elif 'Bsdf' in node.bl_idname or node.bl_idname == 'ShaderNodeSubsurfaceScattering':
-        if rman_parent.plugin_name == 'PxrLayerMixer':
+        if rman_parent.__annotations__["plugin_name"] == 'PxrLayerMixer':
             old_parent = rman_parent
             rman_parent = create_rman_surface(nt, rman_parent, input_index,
                                               'PxrLayerPatternNode')
@@ -1747,7 +1747,7 @@ def get_socket_name(node, socket):
         return socket['name'].replace(' ', '')
     # if this is a renderman node we can just use the socket name,
     else:
-        if not hasattr('node', 'plugin_name'):
+        if not hasattr('node', '__annotations__') or not 'plugin_name' in node.__annotations__:
             if socket.name in node.inputs and socket.name in node.outputs:
                 suffix = 'Out' if socket.is_output else 'In'
                 return socket.name.replace(' ', '') + suffix
@@ -1944,7 +1944,7 @@ def shader_node_rib(ri, node, mat_name, disp_bound=0.0, portal=False):
 
     if node.renderman_node_type == "pattern":
         if node.bl_label == 'PxrOSL':
-            shader = node.plugin_name
+            shader = node.__annotations__['plugin_name']
             if shader:
                 ri.Pattern(shader, instance, params)
         else:
@@ -2031,7 +2031,7 @@ def is_float_type(socket):
     # this is a renderman node
     if type(socket) == type({}):
         return socket['renderman_type'] in ['int', 'float']
-    elif hasattr(socket.node, 'plugin_name'):
+    elif hasattr(socket.node, '__annotations__') and 'plugin_name' in node.__annotations__:
         prop_meta = getattr(socket.node, 'output_meta', [
         ]) if socket.is_output else getattr(socket.node, 'prop_meta', [])
         if socket.name in prop_meta:
@@ -2045,7 +2045,7 @@ def is_float3_type(socket):
     # this is a renderman node
     if type(socket) == type({}):
         return socket['renderman_type'] in ['int', 'float']
-    elif hasattr(socket.node, 'plugin_name'):
+    elif hasattr(socket.node, '__annotations__') and 'plugin_name' in node.__annotations__:
         prop_meta = getattr(socket.node, 'output_meta', [
         ]) if socket.is_output else getattr(socket.node, 'prop_meta', [])
         if socket.name in prop_meta:
@@ -2266,7 +2266,7 @@ def register():
     for cls in classes:
         bpy.utils.register_class(cls)
 
-    user_preferences = bpy.context.user_preferences
+    user_preferences = bpy.context.preferences
     prefs = user_preferences.addons[__package__].preferences
 
     categories = {}

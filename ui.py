@@ -92,7 +92,7 @@ def get_panels():
 
     panels = []
     for t in bpy.types.Panel.__subclasses__():
-        if hasattr(t, 'COMPAT_ENGINES') and 'BLENDER_RENDER' in t.COMPAT_ENGINES:
+        if hasattr(t, 'COMPAT_ENGINES'):
             if t.__name__ not in exclude_panels:
                 panels.append(t)
 
@@ -261,7 +261,7 @@ class RENDER_PT_renderman_spooling(PRManButtonsPanel, Panel):
         icons = load_icons()
         row = layout.row()
         rman_batch = icons.get("batch_render")
-        row.operator("renderman.external_render",
+        row.operator("RENDERMAN_OT_external_render",
                      text="Export", icon_value=rman_batch.icon_id)
 
         layout.separator()
@@ -565,7 +565,7 @@ class RENDER_PT_renderman_advanced_settings(PRManButtonsPanel, Panel):
         col = layout.column()
         col.prop(rm, "use_metadata")
         if rm.use_metadata:
-            col.prop(rm, "custom_metadata")        
+            col.prop(rm, "custom_metadata")
         layout.separator()
         col = layout.column()
         row = col.row()
@@ -1767,7 +1767,7 @@ class Renderman_Light_Panel(CollectionPanel, Panel):
                     columns.label('')
 
 
-class RENDERMAN_LL_LIGHT_list(bpy.types.UIList):
+class RENDERMAN_UL_LIGHT_list(bpy.types.UIList):
 
     def draw_item(self, context, layout, data, item, icon, active_data, active_propname, index):
         rm = context.scene.renderman
@@ -1783,7 +1783,7 @@ class RENDERMAN_LL_LIGHT_list(bpy.types.UIList):
         layout.label(label, icon=icon)
 
 
-class RENDERMAN_LL_OBJECT_list(bpy.types.UIList):
+class RENDERMAN_UL_OBJECT_list(bpy.types.UIList):
 
     def draw_item(self, context, layout, data, item, icon, active_data, active_propname, index):
         rm = context.scene.renderman
@@ -1835,17 +1835,17 @@ class Renderman_Light_Link_Panel(CollectionPanel, Panel):
         row = layout.row()
         flow = row.column_flow(columns=3)
         if rm.ll_light_type == 'light':
-            flow.template_list("RENDERMAN_LL_LIGHT_list", "Renderman_light_link_list",
+            flow.template_list("RENDERMAN_UL_LIGHT_list", "Renderman_light_link_list",
                                bpy.data, "lamps", rm, 'll_light_index')
         else:
-            flow.template_list("RENDERMAN_LL_LIGHT_list", "Renderman_light_link_list",
+            flow.template_list("RENDERMAN_UL_LIGHT_list", "Renderman_light_link_list",
                                rm, "light_groups", rm, 'll_light_index')
 
         if rm.ll_object_type == 'object':
-            flow.template_list("RENDERMAN_LL_OBJECT_list", "Renderman_light_link_list",
+            flow.template_list("RENDERMAN_UL_OBJECT_list", "Renderman_light_link_list",
                                bpy.data, "objects", rm, 'll_object_index')
         else:
-            flow.template_list("RENDERMAN_LL_OBJECT_list", "Renderman_light_link_list",
+            flow.template_list("RENDERMAN_UL_OBJECT_list", "Renderman_light_link_list",
                                rm, "object_groups", rm, 'll_object_index')
 
         if rm.ll_light_index == -1 or rm.ll_object_index == -1:
@@ -2085,7 +2085,7 @@ class Renderman_UI_Panel(bpy.types.Panel, _RManPanelHeader):
         rman_batch = icons.get("batch_render")
 
         if context.scene.renderman.enable_external_rendering:
-            row.operator("renderman.external_render",
+            row.operator("RENDERMAN_OT_external_render",
                          text="External Render", icon_value=rman_batch.icon_id)
 
             row.prop(context.scene, "rm_render_external", text="",
@@ -2448,11 +2448,11 @@ class Renderman_UI_Panel(bpy.types.Panel, _RManPanelHeader):
 
 def register():
     bpy.utils.register_class(RENDERMAN_GROUP_UL_List)
-    bpy.utils.register_class(RENDERMAN_LL_LIGHT_list)
-    bpy.utils.register_class(RENDERMAN_LL_OBJECT_list)
+    bpy.utils.register_class(RENDERMAN_UL_LIGHT_list)
+    bpy.utils.register_class(RENDERMAN_UL_OBJECT_list)
     # bpy.utils.register_class(RENDERMAN_OUTPUT_list)
     # bpy.utils.register_class(RENDERMAN_CHANNEL_list)
-    bpy.types.INFO_MT_render.append(PRMan_menu_func)
+    bpy.types.TOPBAR_MT_render.append(PRMan_menu_func)
 
     for panel in get_panels():
         panel.COMPAT_ENGINES.add('PRMAN_RENDER')
@@ -2460,11 +2460,11 @@ def register():
 
 def unregister():
     bpy.utils.unregister_class(RENDERMAN_GROUP_UL_List)
-    bpy.utils.unregister_class(RENDERMAN_LL_LIGHT_list)
-    bpy.utils.unregister_class(RENDERMAN_LL_OBJECT_list)
+    bpy.utils.unregister_class(RENDERMAN_UL_LIGHT_list)
+    bpy.utils.unregister_class(RENDERMAN_UL_OBJECT_list)
     # bpy.utils.register_class(RENDERMAN_OUTPUT_list)
     # bpy.utils.register_class(RENDERMAN_CHANNEL_list)
-    bpy.types.INFO_MT_render.remove(PRMan_menu_func)
+    bpy.types.TOPBAR_MT_render.remove(PRMan_menu_func)
 
     for panel in get_panels():
         panel.COMPAT_ENGINES.add('PRMAN_RENDER')
