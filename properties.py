@@ -662,11 +662,11 @@ class RendermanSceneSettings(bpy.types.PropertyGroup):
         min=0, max=32, default=1)
     use_metadata:  BoolProperty(
         name="Use Metadata",
-        description="The output file will contain extra image metadata that can aid with production workflows. Information includes camera (focallength, fstop, sensor size and focal distance), version (Blender and RfB), username, blender scene path, statistic xml path and integrator settings.",
+        description="The output file will contain extra image metadata that can aid with production workflows. Information includes camera (focallength, fstop, sensor size and focal distance), version (Blender and RfB), username, blender scene path, statistic xml path and integrator settings",
         default=True)
     custom_metadata:  StringProperty(
         name="Metadata Comment",
-        description="Add a custom comment to the EXR Metadata.",
+        description="Add a custom comment to the EXR Metadata",
         default='')
     use_statistics:  BoolProperty(
         name="Statistics",
@@ -2599,27 +2599,27 @@ def register():
     for cls in classes:
         bpy.utils.register_class(cls)
 
-    bpy.types.Scene.renderman:  PointerProperty(
+    bpy.types.Scene.renderman =  PointerProperty(
         type=RendermanSceneSettings, name="Renderman Scene Settings")
-    bpy.types.World.renderman:  PointerProperty(
+    bpy.types.World.renderman =  PointerProperty(
         type=RendermanWorldSettings, name="Renderman World Settings")
-    bpy.types.Material.renderman:  PointerProperty(
+    bpy.types.Material.renderman =  PointerProperty(
         type=RendermanMaterialSettings, name="Renderman Material Settings")
-    bpy.types.Texture.renderman:  PointerProperty(
+    bpy.types.Texture.renderman =  PointerProperty(
         type=RendermanTextureSettings, name="Renderman Texture Settings")
-    bpy.types.Light.renderman:  PointerProperty(
+    bpy.types.Light.renderman =  PointerProperty(
         type=RendermanLightSettings, name="Renderman Light Settings")
-    bpy.types.ParticleSettings.renderman:  PointerProperty(
+    bpy.types.ParticleSettings.renderman =  PointerProperty(
         type=RendermanParticleSettings, name="Renderman Particle Settings")
-    bpy.types.Mesh.renderman:  PointerProperty(
+    bpy.types.Mesh.renderman =  PointerProperty(
         type=RendermanMeshGeometrySettings,
         name="Renderman Mesh Geometry Settings")
-    bpy.types.Curve.renderman:  PointerProperty(
+    bpy.types.Curve.renderman =  PointerProperty(
         type=RendermanCurveGeometrySettings,
         name="Renderman Curve Geometry Settings")
-    bpy.types.Object.renderman:  PointerProperty(
+    bpy.types.Object.renderman =  PointerProperty(
         type=RendermanObjectSettings, name="Renderman Object Settings")
-    bpy.types.Camera.renderman:  PointerProperty(
+    bpy.types.Camera.renderman =  PointerProperty(
         type=RendermanCameraSettings, name="Renderman Camera Settings")
 
 

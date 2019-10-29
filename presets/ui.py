@@ -42,7 +42,7 @@ class Renderman_Presets_UI_Panel(bpy.types.Panel):
     bl_idname = "RENDERMAN_PT_renderman_presets_ui_panel"
     bl_label = "RenderMan Presets"
     bl_space_type = "VIEW_3D"
-    bl_region_type = "TOOLS"
+    bl_region_type = "UI"
     bl_category = "Renderman"
 
     @classmethod

@@ -1932,7 +1932,7 @@ class Renderman_UI_Panel(bpy.types.Panel, _RManPanelHeader):
     bl_idname = "renderman_ui_panel"
     bl_label = "RenderMan"
     bl_space_type = "VIEW_3D"
-    bl_region_type = "TOOLS"
+    bl_region_type = "UI"
     bl_category = "Renderman"
 
     @classmethod

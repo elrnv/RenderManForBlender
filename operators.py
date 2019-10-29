@@ -1417,8 +1417,19 @@ class RM_restart_addon(bpy.types.Operator):
 compile_shader_menu_func = (lambda self, context: self.layout.operator(
     TEXT_OT_compile_shader.bl_idname))
 
+classes = (
+        RENDERMAN_OT_open_stats,
+        RENDERMAN_OT_start_it,
+        RENDERMAN_OT_open_last_RIB,
+        RENDERMAN_OT_add_remove_output,
+        RENDERMAN_OT_bake,
+        RENDERMAN_OT_ExternalRender,
+        RENDERMAN_OT_StartInteractive,
+        )
 
 def register():
+    for cls in classes:
+        bpy.utils.register_class(cls)
     bpy.types.TEXT_MT_text.append(compile_shader_menu_func)
     bpy.types.TEXT_MT_toolbox.append(compile_shader_menu_func)
     bpy.types.TOPBAR_MT_help.append(menu_draw)
@@ -1440,6 +1451,8 @@ def register():
 
 
 def unregister():
+    for cls in reverse(classes):
+        bpy.utils.unregister_class(cls)
     bpy.types.TEXT_MT_text.remove(compile_shader_menu_func)
     bpy.types.TEXT_MT_toolbox.remove(compile_shader_menu_func)
     bpy.types.TOPBAR_MT_help.remove(menu_draw)

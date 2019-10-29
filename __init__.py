@@ -53,7 +53,8 @@ class PRManRender(bpy.types.RenderEngine):
                 engine.free(self)
 
     # main scene render
-    def update(self, data, scene):
+    def update(self, data, depsgraph):
+        scene = depsgraph.scene
         if(engine.ipr):
             return
         if self.is_preview:

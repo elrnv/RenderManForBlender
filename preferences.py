@@ -195,7 +195,7 @@ class RendermanPreferences(AddonPreferences):
     active_presets_path: StringProperty(default = '')
     presets_path: StringProperty(
         name="Path for preset Library",
-        description="Path for preset files, if not present these will be copied from RMANTREE.\n  Set this if you want to pull in an external library.",
+        description="Path for preset files, if not present these will be copied from RMANTREE.\n  Set this if you want to pull in an external library",
         subtype='FILE_PATH',
         default=os.path.join(os.path.dirname(os.path.abspath(__file__)), 'presets', 'RenderManAssetLibrary'))
 
